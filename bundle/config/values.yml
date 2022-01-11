@@ -1,0 +1,16 @@
+#@data/values
+---
+#! Set application name.
+APP: yelb
+
+#! Set target namespace.
+NAMESPACE: yelb
+
+#! Set the public-facing domain used for accessing the application (ingress only).
+DOMAIN: yelb.example.com
+
+#! Set cert-manager cluster issuer to use when ingress TLS is enabled.
+CERT_MANAGER_CLUSTER_ISSUER: letsencrypt-staging
+
+#! Set to true to include NetworkPolicy objects, enforcing traffic rules.
+ENABLE_NETWORK_POLICIES: true

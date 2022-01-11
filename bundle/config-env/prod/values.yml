@@ -1,0 +1,6 @@
+#@data/values
+---
+APP: yelb-prod
+NAMESPACE: yelb-prod
+DOMAIN: yelb.withtanzu.com
+CERT_MANAGER_CLUSTER_ISSUER: letsencrypt-prod

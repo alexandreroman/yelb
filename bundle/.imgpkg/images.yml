@@ -1,0 +1,32 @@
+---
+apiVersion: imgpkg.carvel.dev/v1alpha1
+images:
+- annotations:
+    kbld.carvel.dev/id: bitnami/redis:4.0.14
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: 4.0.14
+          url: bitnami/redis:4.0.14
+  image: index.docker.io/bitnami/redis@sha256:12e078f2ab1626f4a608bee7d6b0780511b23d100e3d6d9bde7fa55783eee601
+- annotations:
+    kbld.carvel.dev/id: ghcr.io/alexandreroman/yelb-appserver:0.5
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: "0.5"
+          url: ghcr.io/alexandreroman/yelb-appserver:0.5
+  image: ghcr.io/alexandreroman/yelb-appserver@sha256:db367946dc02cf38752ad925e0b0fbff0f5c6f9186ca481fb8541530879d9c8d
+- annotations:
+    kbld.carvel.dev/id: ghcr.io/alexandreroman/yelb-db:0.5
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: "0.5"
+          url: ghcr.io/alexandreroman/yelb-db:0.5
+  image: ghcr.io/alexandreroman/yelb-db@sha256:6412d2fe96ee71ca701932d47675c549fe0428dede6a7975d39d9a581dc46c0c
+- annotations:
+    kbld.carvel.dev/id: ghcr.io/alexandreroman/yelb-ui:0.7
+    kbld.carvel.dev/origins: |
+      - resolved:
+          tag: "0.7"
+          url: ghcr.io/alexandreroman/yelb-ui:0.7
+  image: ghcr.io/alexandreroman/yelb-ui@sha256:a2199d4f9fd38b168af93acf25331cda4e93140704bcba585d8981e0eeec0050
+kind: ImagesLock

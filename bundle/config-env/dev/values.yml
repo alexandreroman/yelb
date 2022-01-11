@@ -1,0 +1,6 @@
+#@data/values
+---
+APP: yelb-dev
+NAMESPACE: yelb-dev
+DOMAIN: dev.yelb.withtanzu.com
+CERT_MANAGER_CLUSTER_ISSUER: letsencrypt-staging

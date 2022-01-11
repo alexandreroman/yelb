@@ -1,0 +1,71 @@
+#@ load("@ytt:data", "data")
+#@ load("helpers.star", "labels_for_component")
+
+#!
+#! Network policy configuration
+#!
+#! You may want to use netshoot to check that traffic rules are enforced:
+#! $ kubectl -n <NAMESPACE> run tmp-shell --rm -i --tty --image nicolaka/netshoot -l "app.kubernetes.io/part-of=<APP>" -- /bin/bash
+#!
+
+#@ if data.values.ENABLE_NETWORK_POLICIES:
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-ingress
+  namespace: #@ data.values.NAMESPACE
+spec:
+  #! Deny ALL inbound traffic by default.
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/part-of: #@ data.values.APP
+  ingress: []
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-egress
+  namespace: #@ data.values.NAMESPACE
+spec:
+  #! Deny ALL outbound traffic by default, except for DNS.
+  policyTypes:
+  - Egress
+  egress:
+  - ports:
+    - port: 53
+      protocol: UDP
+    - port: 53
+      protocol: TCP
+  - to:
+    - namespaceSelector: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-namespace
+  namespace: #@ data.values.NAMESPACE
+spec:
+  #! Allow inbound traffic inside this namespace.
+  matchLabels:
+    app.kubernetes.io/part-of: #@ data.values.APP
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          app.kubernetes.io/part-of: #@ data.values.APP
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-http
+  namespace: #@ data.values.NAMESPACE
+spec:
+  #! Allow inbound traffic for HTTP requests to UI.
+  podSelector:
+    matchLabels: #@ labels_for_component("yelb-ui")
+  ingress:
+  - ports:
+    - port: 80
+---
+#@ end

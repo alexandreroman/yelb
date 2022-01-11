@@ -1,0 +1,109 @@
+#@ load("@ytt:data", "data")
+#@ load("helpers.star", "labels_for_component")
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yelb-ui
+  namespace: #@ data.values.NAMESPACE
+  labels: #@ labels_for_component("yelb-ui")
+spec:
+  replicas: 1
+  selector:
+    matchLabels: #@ labels_for_component("yelb-ui")
+  template:
+    metadata:
+      labels: #@ labels_for_component("yelb-ui")
+    spec:
+      containers:
+      - name: yelb-ui
+        image: ghcr.io/alexandreroman/yelb-ui:0.7
+        resources:
+          limits:
+            memory: 256Mi
+        ports:
+        - containerPort: 80
+        livenessProbe:
+          httpGet:
+            port: 80
+            path: /
+        readinessProbe:
+          httpGet:
+            port: 80
+            path: /
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-server
+  namespace: #@ data.values.NAMESPACE
+  labels: #@ labels_for_component("redis-server")
+  annotations:
+    #! Pods will be recreated when a new Secret version is available,
+    #! so that the new configuration is applied.
+    kapp.k14s.io/update-strategy: fallback-on-replace
+spec:
+  selector:
+    matchLabels: #@ labels_for_component("redis-server")
+  template:
+    metadata:
+      labels: #@ labels_for_component("redis-server")
+    spec:
+      replicas: 1
+      containers:
+      - name: redis-server
+        image: bitnami/redis:4.0.14
+        resources:
+          limits:
+            memory: 256Mi
+        ports:
+        - containerPort: 6379
+        envFrom:
+        - secretRef:
+            name: redis-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yelb-db
+  namespace: #@ data.values.NAMESPACE
+  labels: #@ labels_for_component("yelb-db")
+spec:
+  selector:
+    matchLabels: #@ labels_for_component("yelb-db")
+  template:
+    metadata:
+      labels: #@ labels_for_component("yelb-db")
+    spec:
+      replicas: 1
+      containers:
+      - name: yelb-db
+        image: ghcr.io/alexandreroman/yelb-db:0.5
+        resources:
+          limits:
+            memory: 256Mi
+        ports:
+        - containerPort: 5432
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yelb-appserver
+  namespace: #@ data.values.NAMESPACE
+  labels: #@ labels_for_component("yelb-appserver")
+spec:
+  selector:
+    matchLabels: #@ labels_for_component("yelb-appserver")
+  template:
+    metadata:
+      labels: #@ labels_for_component("yelb-appserver")
+    spec:
+      replicas: 1
+      containers:
+      - name: yelb-appserver
+        image: ghcr.io/alexandreroman/yelb-appserver:0.5
+        resources:
+          limits:
+            memory: 256Mi
+        ports:
+        - containerPort: 4567

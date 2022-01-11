@@ -1,0 +1,22 @@
+apiVersion: kappctrl.k14s.io/v1alpha1
+kind: App
+metadata:
+  name: yelb
+spec:
+  serviceAccountName: cluster-admin-sa
+  fetch:
+  - imgpkgBundle:
+      image: ghcr.io/alexandreroman/yelb-app@sha256:1260fd81258ba23ce777906b413302b8735c18095a3c999f3fb3dcf5ff40d6c6
+  template:
+  - ytt:
+      paths:
+      - config
+      - config-ext/ingress.yml
+      - config-ext/ingress-tls.yml
+      - config-env/prod
+  - kbld:
+      paths:
+      - "-"
+      - .imgpkg/images.yml
+  deploy:
+  - kapp: {}
