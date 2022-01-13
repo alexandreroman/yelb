@@ -16,7 +16,7 @@ lock: check-carvel # Updates the image lock file.
 	kbld -f bundle/config --imgpkg-lock-output bundle/.imgpkg/images.yml
 
 deploy: check-carvel
-	ytt -f bundle/config -f config-env/${ENV} | kbld -f- > _tmp.yml
+	ytt -f bundle/config -f bundle/config-env/${ENV} | kbld -f- > _tmp.yml
 	kapp deploy -a yelb-${ENV} -f _tmp.yml -c -y
 	rm -f _tmp.yml
 
